@@ -1,11 +1,13 @@
 # github.com
-#GITHUB_TOKEN=
-#ORGANIZATION=
-#URL_REPOS=https://api.github.com/orgs/{}/repos?type=all
-#URL_ALERTS=https://api.github.com/repos/{}/{}/dependabot/alerts
+#ORGANIZATION=harvard-lts
+harvard-lts.GITHUB_TOKEN=github_pat_...
+harvard-lts.URL_REPOS=https://api.github.com/orgs/{}/repos?type=all
+harvard-lts.URL_ALERTS=https://api.github.com/repos/{}/{}/dependabot/alerts
+harvard-lts.URL_PROPS=https://api.github.com/repos/{}/{}/properties/values
 
 # HUIT github
-GITHUB_TOKEN=
-ORGANIZATION=
-URL_REPOS=https://github.huit.harvard.edu/api/v3/orgs/{}/repos?type=all
-URL_ALERTS=https://github.huit.harvard.edu/api/v3/repos/{}/{}/dependabot/alerts
+#ORGANIZATION=LTS
+LTS.GITHUB_TOKEN=ghp_...
+LTS.URL_REPOS=https://github.huit.harvard.edu/api/v3/orgs/{}/repos?type=all
+LTS.URL_ALERTS=https://github.huit.harvard.edu/api/v3/repos/{}/{}/dependabot/alerts
+LTS.URL_PROPS=https://github.huit.harvard.edu/api/v3/repos/{}/{}/properties/values
