@@ -1,17 +1,19 @@
 import requests
 from dotenv import load_dotenv
+from datetime import date
 import os
 import urllib.parse
-import json
 import argparse
 
 # Load .env file
 load_dotenv()
 
+
 class DependabotFinder():
-    def __init__(self, org):
+    def __init__(self, org, label=None):
         # Constants
         self.ORGANIZATION = org
+        self.LABEL = label or org
         self.GITHUB_TOKEN = os.getenv(f'{org}.GITHUB_TOKEN')
         self.URL_REPOS = os.getenv(f'{org}.URL_REPOS')
         self.URL_ALERTS = os.getenv(f'{org}.URL_ALERTS')
@@ -29,9 +31,9 @@ class DependabotFinder():
             url = response.links.get('next', {}).get('url')  # Pagination
         return repos
 
-
     def get_vulnerabilities(self, repo):
-        """Fetch critical and high vulnerabilities for a given repository with pagination."""
+        """Fetch critical and high vulnerabilities for a
+        given repository with pagination."""
         url = self.URL_ALERTS.format(self.ORGANIZATION, repo)
         vulnerabilities = []
 
@@ -42,7 +44,8 @@ class DependabotFinder():
                 # Add the current page's results to the vulnerabilities list
                 vulnerabilities.extend(response.json())
 
-                # Parse the "Link" header to find the next page URL, if it exists
+                # Parse the "Link" header to find the next page URL,
+                # if it exists
                 links = response.headers.get('Link', '')
                 next_url = None
                 if links:
@@ -69,7 +72,8 @@ class DependabotFinder():
         Fetch a custom property from a file within a GitHub repository.
 
         Args:
-        property_name (str): The name of the property to retrieve from the file.
+        property_name (str): The name of the property to retrieve from
+        the file.
 
         Returns:
         str: The value of the property or 'not-found' if not present.
@@ -78,7 +82,8 @@ class DependabotFinder():
 
         try:
             response = requests.get(url, headers=self.HEADERS)
-            response.raise_for_status()  # Raises an HTTPError for bad responses
+            # Raises an HTTPError for bad responses
+            response.raise_for_status()
             data = response.json()
             for item in data:
                 if item["property_name"] == property_name:
@@ -93,7 +98,6 @@ class DependabotFinder():
             print(f"JSON Error: {e}")
             return 'not-found'
         return "not-found"
-
 
     def get_base_url(self, url):
         # Parse the URL into components
@@ -110,28 +114,37 @@ class DependabotFinder():
         new_url = parsed_url._replace(path=new_path).geturl()
         return new_url
 
-
-
     def do_work(self):
+        output_dir = os.getenv('OUTPUT_DIR', '.')
+        os.makedirs(output_dir, exist_ok=True)
+        datestamp = date.today().strftime('%Y-%m-%d')
+        output_path = os.path.join(
+            output_dir, f'{datestamp}-{self.LABEL}.csv')
+
         repos = self.get_repositories()
-        print("Portfolio,Repository,Critical,High,URL")
-        for repo in repos:
-            vulnerabilities = self.get_vulnerabilities(repo)
-            portfolio = self.get_repository_property(repo, 'Portfolio')
-            if vulnerabilities:
-                url = ""
-                critical = 0
-                high = 0
-                for v in vulnerabilities:
-                    if url == "":
-                        url = self.get_base_url(v['html_url'])
+        with open(output_path, 'w') as f:
+            f.write("Portfolio,Repository,Critical,High,URL\n")
+            for repo in repos:
+                vulnerabilities = self.get_vulnerabilities(repo)
+                portfolio = self.get_repository_property(repo, 'Portfolio')
+                if vulnerabilities:
+                    url = ""
+                    critical = 0
+                    high = 0
+                    for v in vulnerabilities:
+                        if url == "":
+                            url = self.get_base_url(v['html_url'])
 
-                    if v['security_advisory'].get('severity') == 'critical':
-                        critical = critical + 1
-                    if v['security_advisory'].get('severity') == 'high':
-                        high = high + 1
+                        severity = v['security_advisory'].get('severity')
+                        if severity == 'critical':
+                            critical = critical + 1
+                        if severity == 'high':
+                            high = high + 1
 
-                print(f"{portfolio},{repo},{critical},{high},{url}")
+                    f.write(
+                        f"{portfolio},{repo},{critical},{high},{url}\n")
+        print(f"Wrote {output_path}")
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -146,12 +159,13 @@ def main():
 
     if args.huit:
         org = "LTS"
+        label = "huit"
     else:
         org = "harvard-lts"
-    finder = DependabotFinder(org)
+        label = "lts"
+    finder = DependabotFinder(org, label)
     finder.do_work()
 
 
 if __name__ == "__main__":
     main()
-

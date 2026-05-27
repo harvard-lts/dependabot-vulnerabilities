@@ -11,3 +11,5 @@ LTS.GITHUB_TOKEN=ghp_...
 LTS.URL_REPOS=https://github.huit.harvard.edu/api/v3/orgs/{}/repos?type=all
 LTS.URL_ALERTS=https://github.huit.harvard.edu/api/v3/repos/{}/{}/dependabot/alerts
 LTS.URL_PROPS=https://github.huit.harvard.edu/api/v3/repos/{}/{}/properties/values
+
+OUTPUT_DIR=XXX
