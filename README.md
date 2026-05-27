@@ -6,10 +6,9 @@ By passing in the `--huit` command-line argument, the tool reports on vulnerabil
 ## Usage
 
 ### Setup
+This project uses [uv](https://docs.astral.sh/uv/) for dependency and environment management. `uv sync` creates a virtual environment at `.venv/` and installs the dependencies from `pyproject.toml`.
 ```bash
-python3.11 -m venv myenv
-source myenv/bin/activate
-pip install -r requirements.txt
+uv sync
 ```
 
 ### Credentials
@@ -27,7 +26,7 @@ vi .env
 
 ### Execution
 ```bash
-source myenv/bin/activate
+source .venv/bin/activate
 
 # harvard-lts
 python dependabot_vulnerabilities.py > 2025-01-06-lts.csv

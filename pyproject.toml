@@ -1,0 +1,9 @@
+[project]
+name = "dependabot-vulnerabilities"
+version = "0.1.0"
+description = "Report critical and high Dependabot vulnerabilities across a GitHub organization."
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv==1.2.2",
+    "requests==2.34.2",
+]

@@ -1,6 +1,7 @@
 *~
 *.swp
 myenv/
+.venv/
 output/
 .env
 *.csv
