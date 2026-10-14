@@ -1,3 +1,6 @@
+# This is now part of the claude-skills repo
+https://github.com/harvard-lts/claude-skills/tree/main/skills/dependabot
+
 # Dependabot Vulnerabilities
 This script reads the `critical` and `high` dependabot vulnerabilities from all repositories in the provided Github organization and writes a CSV formatted result to `$OUTPUT_DIR/YYYY-MM-DD-{lts,huit}.csv`.
 By default, the tool reports on vulnerabilities found in the https://github.com/harvard-lts Github org.
